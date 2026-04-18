@@ -68,7 +68,16 @@ fn build_windows(config : &BuildConfig) -> Result<()> {
             }
         }
     }
-
+    let zlib_path = current_dir()?.join(&config.platform).join("zlibmts").join("zlib.lib");
+    copy(&zlib_path, config.target_path.join(&zlib_path.file_name().unwrap()))?;
+    println!("cargo::rustc-link-lib=static={}", zlib_path.file_stem().unwrap().to_string_lossy());
+    let lz4_path = current_dir()?.join(&config.platform).join("lz4mts/lib").join("liblz4.lib");
+    copy(&lz4_path, config.target_path.join(&lz4_path.file_name().unwrap()))?;
+    println!("cargo::rustc-link-lib=static=liblz4");
+    println!("cargo::rustc-link-lib=advapi32");
+    println!("cargo::rustc-link-lib=user32");
+    println!("cargo::rustc-link-lib=ole32");
+    println!("cargo::rustc-link-lib=rpcrt4");
     Ok(())
 }
 

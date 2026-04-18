@@ -7,6 +7,7 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
+
 pub type Sint32_t = ::std::os::raw::c_int;
 pub type Suint32_t = ::std::os::raw::c_uint;
 pub type Sint64_t = ::std::os::raw::c_longlong;
@@ -18,6 +19,7 @@ pub type xptr = ptr;
 pub type string_char = ::std::os::raw::c_uint;
 pub type octet = ::std::os::raw::c_uchar;
 
+#[macro_export]
 macro_rules! Sfixnump {
     ($e:expr) => {
         $e as usize & 0x7 == 0x0
