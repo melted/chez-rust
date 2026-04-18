@@ -1,30 +1,560 @@
 //! This module started as bindgen output from Chez Scheme's scheme.h.
-//! Since then it has been made cross-platform, arguments have been name,
+//! Since then it has been made cross-platform, arguments have been named,
 //! documentation added and the macros from the C header has been hand-translated.
 //!
 //! It's expected that any further changes in the API will be added to this file
 //! manually.
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
+
+use std::ffi::c_void;
 
 
-pub type Sint32_t = ::std::os::raw::c_int;
-pub type Suint32_t = ::std::os::raw::c_uint;
-pub type Sint64_t = ::std::os::raw::c_longlong;
-pub type Suint64_t = ::std::os::raw::c_ulonglong;
-pub type ptr = *mut ::std::os::raw::c_void;
-pub type iptr = ::std::os::raw::c_longlong;
-pub type uptr = ::std::os::raw::c_ulonglong;
+pub type Sint32_t = i32;
+pub type Suint32_t = u32;
+pub type Sint64_t = i64;
+pub type Suint64_t = u64;
+pub type ptr = *mut c_void;
+pub type iptr = isize;
+pub type uptr = usize;
 pub type xptr = ptr;
-pub type string_char = ::std::os::raw::c_uint;
-pub type octet = ::std::os::raw::c_uchar;
+pub type string_char = u32;
+pub type octet = u8;
 
+/// Type predicate for fixnum
 #[macro_export]
 macro_rules! Sfixnump {
     ($e:expr) => {
         $e as usize & 0x7 == 0x0
     };
 }
+
+/// Type predicate for char
+#[macro_export]
+macro_rules! Scharp {
+    ($e:expr) => {
+        $e as usize & 0xFF == 0x16
+    };
+}
+
+
+/// Type predicate for null
+#[macro_export]
+macro_rules! Snullp {
+    ($e:expr) => {
+        $e as uptr == 0x26
+    };
+}
+
+/// Type predicate for eof object
+#[macro_export]
+macro_rules! Seof_objectp {
+    ($e:expr) => {
+        $e as uptr == 0x36
+    };
+}
+
+/// Type predicate for bwp object
+#[macro_export]
+macro_rules! Sbwp_objectp {
+    ($e:expr) => {
+        $e as uptr == 0x4E
+    };
+}
+
+/// Type predicate for boolean
+#[macro_export]
+macro_rules! Sbooleanp {
+    ($e:expr) => {
+        $e as uptr & 0xf7 == 0x6
+    };
+}
+
+/// Type predicate for pair
+#[macro_export]
+macro_rules! Spairp {
+    ($e:expr) => {
+        $e as uptr & 0x7 == 0x1
+    };
+}
+
+/// Type predicate for symbol
+#[macro_export]
+macro_rules! Ssymbolp {
+    ($e:expr) => {
+        $e as usize & 0x7 == 0x3
+    };
+}
+
+/// Type predicate for procedure
+#[macro_export]
+macro_rules! Sprocedurep {
+    ($e:expr) => {
+        $e as uptr & 0x7 == 0x5
+    };
+}
+
+/// Type predicate for flonum
+#[macro_export]
+macro_rules! Sflonump {
+    ($e:expr) => {
+        $e as uptr & 0x7 == 0x2
+    };
+}
+
+/// Type predicate for vector
+#[macro_export]
+macro_rules! Svectorp {
+    ($e:expr) => {
+        let p = $e as uptr;
+        p & 0x7 == 0x7 && {
+            *((p+1) as ptr) & 0x7 == 0x0
+        } 
+    };
+}
+
+/// Type predicate for fxvector
+#[macro_export]
+macro_rules! Sfxvectorp {
+    ($e:expr) => {
+        let p = $e as uptr;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as ptr;
+            *a & 0xf == 0x3
+        } 
+    };
+}
+
+/// Type predicate for flvector
+#[macro_export]
+macro_rules! Sflvectorp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0xf == 0xb
+        } 
+    };
+}
+
+/// Type predicate for bytevector
+#[macro_export]
+macro_rules! Sbytevectorp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x3 == 0x1
+        } 
+    };
+}
+
+/// Type predicate for string
+#[macro_export]
+macro_rules! Sstringp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x7 == 0x2
+        } 
+    };
+}
+
+/// Type predicate for stencil vector
+#[macro_export]
+macro_rules! Sstencil_vectorp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x3f == 0xe
+        } 
+    };
+}
+
+/// Type predicate for system stencil vector
+#[macro_export]
+macro_rules! Ssystem_stencil_vectorp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x3f == 0x2e
+        } 
+    };
+}
+
+/// Type predicate for any stencil vector
+#[macro_export]
+macro_rules! Sany_stencil_vectorp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x1f == 0xe
+        } 
+    };
+}
+
+/// Type predicate for bignum
+#[macro_export]
+macro_rules! Sbignump {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x1f == 0x6
+        } 
+    };
+}
+
+/// Type predicate for box
+#[macro_export]
+macro_rules! Sboxp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0xff == 0x1e
+        } 
+    };
+}
+
+/// Type predicate for inexact num
+#[macro_export]
+macro_rules! Sinexactnump {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a == 0x36
+        } 
+    };
+}
+
+// Type predicate for exact num
+#[macro_export]
+macro_rules! Sexactnump {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a == 0x56
+        } 
+    };
+}
+
+// Type predicate for ratnum
+#[macro_export]
+macro_rules! Sratnump {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a == 0x16
+        } 
+    };
+}
+
+// Type predicate for input port
+#[macro_export]
+macro_rules! Sinputportp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 1ff == 0x1de
+        } 
+    };
+}
+
+// Type predicate for output port
+#[macro_export]
+macro_rules! Soutputportp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 2ff == 0x2de
+        } 
+    };
+}
+
+/// Type predicate for record
+#[macro_export]
+macro_rules! Srecordp {
+    ($e:expr) => {
+        let p = $e as usize;
+        p & 0x7 == 0x7 && {
+            let a = (p+1) as *const usize;
+            *a & 0x7 == 0x7
+        } 
+    };
+}
+
+/// Get fixnum value from ptr
+#[macro_export]
+macro_rules! Sfixnum_value {
+    ($e:expr) => {
+        ($e as iptr)/8 
+    };
+}
+
+/// Get char value from ptr
+#[macro_export]
+macro_rules! Schar_value {
+    ($e:expr) => {
+        (($e as uptr) >> 8) as string_char 
+    };
+}
+
+/// Get boolean value from ptr
+#[macro_export]
+macro_rules! Sboolean_value {
+    ($e:expr) => {
+        $e != Sfalse 
+    };
+}
+
+/// Get car of pair
+#[macro_export]
+macro_rules! Scar {
+    ($e:expr) => {
+        *((($e as uptr) + 7) as ptr)
+    };
+}
+
+/// Get cdr of pair
+#[macro_export]
+macro_rules! Scdr {
+    ($e:expr) => {
+        *((($e as uptr) + 15) as ptr)
+    };
+}
+
+/// Get a flonum value from ptr
+#[macro_export]
+macro_rules! Sflonum_value {
+    ($e:expr) => {
+        *((($e as uptr) + 6) as *const f64)
+    };
+}
+
+/// Get the length of a vector
+#[macro_export]
+macro_rules! Svector_length {
+    ($e:expr) => {
+        *((($e as uptr) + 1) as *const iptr) >> 4
+    };
+}
+
+/// Get an element of a vector
+#[macro_export]
+macro_rules! Svector_ref {
+    ($e:expr, $i:expr) => {
+        *(((($e as uptr) + 9) as ptr).add($i))
+    };
+}
+
+/// Get the length of an fxvector
+#[macro_export]
+macro_rules! Sfxvector_length {
+    ($e:expr) => {
+        *((($e as uptr) + 1) as *const iptr) >> 4
+    };
+}
+
+/// Get an element of an fxvector
+#[macro_export]
+macro_rules! Sfxvector_ref {
+    ($e:expr, $i:expr) => {
+        *(((($e as uptr) + 9) as ptr).add($i))
+    };
+}
+
+/// Get the length of an flvector
+#[macro_export]
+macro_rules! Sflvector_length {
+    ($e:expr) => {
+        *((($e as uptr) + 1) as *const iptr) >> 4
+    };
+}
+
+/// Get an element of an flvector
+#[macro_export]
+macro_rules! Sflvector_ref {
+    ($e:expr, $i:expr) => {
+        *(((($e as uptr) + 9) as *const f64).add($i))
+    };
+}
+
+/// Get the length of a bytevector
+#[macro_export]
+macro_rules! Sbytevector_length {
+    ($e:expr) => {
+        *((($e as uptr) + 1) as *const iptr) >> 3
+    };
+}
+
+/// Get an element of a bytevector
+#[macro_export]
+macro_rules! Sbytevector_u8_ref {
+    ($e:expr, $i:expr) => {
+        *(((($e as uptr) + 9) as *const u8).add($i))
+    };
+}
+
+/// Get the data of a bytevector
+/// Warning: Sbytevector_data(x) returns a pointer into x.
+#[macro_export]
+macro_rules! Sbytevector_data {
+    ($e:expr) => {
+        ((($e as uptr) + 9) as *const u8)
+    };
+}
+
+/// Get the length of a string
+#[macro_export]
+macro_rules! Sstring_length {
+    ($e:expr) => {
+        *((($e as uptr) + 1) as *const iptr) >> 4
+    };
+}
+
+/// Get an element of a vector
+#[macro_export]
+macro_rules! Sstring_ref {
+    ($e:expr, $i:expr) => {
+        Schar_value(*(((($e as uptr) + 9) as *const string_char).add($i)))
+    };
+}
+
+/// Unbox a box
+#[macro_export]
+macro_rules! Sunbox {
+    ($e:expr) => {
+        *((($e as uptr) + 9) as ptr)
+    };
+}
+
+/// Get the length of a stencil vector
+#[macro_export]
+macro_rules! Sstencilvector_length {
+    ($e:expr) => {
+        Spopcount(*((($e as uptr) + 1) as *const iptr) >> 6)
+    };
+}
+
+/// Get an element of a stencil vector
+#[macro_export]
+macro_rules! Sstencilvector_ref {
+    ($e:expr, $i:expr) => {
+        *(((($e as uptr) + 9) as ptr).add($i))
+    };
+}
+
+/// Get an unsigned integer from ptr
+#[macro_export]
+macro_rules! Sunsigned_value {
+    ($e:expr) => {
+        Sinteger_value($e) as uptr
+    };
+}
+
+/// Get an unsigned integer from ptr
+#[macro_export]
+macro_rules! Sunsigned32_value {
+    ($e:expr) => {
+        Sinteger32_value($e) as u32
+    };
+}
+
+/// Get an unsigned integer from ptr
+#[macro_export]
+macro_rules! Sunsigned64_value {
+    ($e:expr) => {
+        Sinteger64_value($e) as u64
+    };
+}
+
+/// Set a char in a string.
+/// TODO: check how it's working with native Rust chars
+#[macro_export]
+macro_rules! Sstring_set {
+    ($e:expr, $i:expr, $c:expr) => {
+        *(((($e as uptr) + 9) as *mut string_char).add($i)) = Schar(c);
+    };
+}
+
+/// Set a fixnum in an fxvector.
+/// TODO: check how it's working with native Rust chars
+#[macro_export]
+macro_rules! Sfxvector_set {
+    ($e:expr, $i:expr, $n:expr) => {
+        Sfxvector_ref($e, $i) = n;
+    };
+}
+
+/// Set a float in an flvector.
+/// TODO: check how it's working with native Rust types
+#[macro_export]
+macro_rules! Sflvector_set {
+    ($e:expr, $i:expr, $n:expr) => {
+        Sflvector_ref($e, $i) = n;
+    };
+}
+
+/// Set a byte in a bytevector.
+/// TODO: check how it's working with native Rust chars
+#[macro_export]
+macro_rules! Sbytevector_u8_set {
+    ($e:expr, $i:expr, $n:expr) => {
+        Sbytevector_u8_ref($e, $i) = n;
+    };
+}
+
+
+#[macro_export]
+macro_rules! Srecord_uniform_ref {
+    ($e:expr, $i:expr) => {
+        *(((($e as uptr) + 9) as ptr).add($i))
+    };
+}
+
+#[macro_export]
+macro_rules! Sforeign_callable_entry_point {
+    ($e:expr) => {
+        ((($e as uptr) + 65) as * mut fn())
+    };
+}
+
+#[macro_export]
+macro_rules! Sforeign_callable_code_object {
+    ($e:expr) => {
+        ((($e as uptr) - 65) as ptr)
+    };
+}
+
+
+
+pub const Snil:ptr = 0x26 as ptr;
+pub const Strue:ptr = 0xe as ptr;
+pub const Sfalse:ptr = 0x6 as ptr;
+
+#[macro_export]
+macro_rules! Sboolean {
+    ($e:expr) => {
+        if $e { Strue } else { Sfalse }
+    };
+}
+
+pub const Sbwp_object:ptr = 0x4e as ptr;
+pub const Seof_object:ptr = 0x36 as ptr;
+pub const Svoid:ptr = 0x2e as ptr;
+
+
 
 unsafe extern "C" {
 

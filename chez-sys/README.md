@@ -15,8 +15,8 @@ provided by the system (a special problem here is that all the distros call it
 something different). It would also be desirable to have environment variables
 for the location of binaries to use.
 
-Zlib and LZ4 are also linked statically. Enabling use of system libraries is a
-TODO.
+Zlib and LZ4 are also built and linked statically. Enabling use of system libraries
+for them is also a TODO.
 
 ## TODO
 - Feature to use system libs
@@ -24,3 +24,4 @@ TODO.
 - Feature for portable bytecode variant
 - More tests
 - More examples
+- CI
