@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use crate::boot;
+use crate::{boot, scheme::{Sscheme_deinit, Sscheme_init}};
 
 #[test]
 fn test_embedded_boot_file() {
@@ -10,3 +10,9 @@ fn test_embedded_boot_file() {
     assert!(scheme.len() > 1000000)
 }
 
+#[test]
+fn test_init() {
+    unsafe {
+        Sscheme_init(None);
+    }
+}

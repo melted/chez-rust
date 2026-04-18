@@ -1,6 +1,9 @@
 # chez-sys
 
-Low-level bindings to Chez Scheme
+Low-level bindings to Chez Scheme.
+
+> NOTE: This library is in the early stages of development, and is severely 
+> lacking in tests and general stability.
 
 ## Building
 
