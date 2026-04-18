@@ -82,6 +82,32 @@ fn build_windows(config : &BuildConfig) -> Result<()> {
 }
 
 fn build_unix(config : &BuildConfig) -> Result<()> {
+    let out = Command::new("./configure").args(["-m",&config.platform]).output().expect("failed to run configure");
+    let strout = String::from_utf8(out.stdout).unwrap_or_default();
+    let strerr = String::from_utf8(out.stderr).unwrap_or_default();
+    println!("{}\n", strerr);
+    println!("{}", strout);
+    let out = Command::new("make").output().expect("failed to run make");
+    let strout = String::from_utf8(out.stdout).unwrap_or_default();
+    let strerr = String::from_utf8(out.stderr).unwrap_or_default();
+    println!("{}\n", strerr);
+    println!("{}", strout);
+    let build_dir = current_dir()?.join(&config.platform);
+    let chez_lib_dir = build_dir.join("boot").join(&config.platform);
+    println!("chezpath= {chez_lib_dir:?}");
+    println!("cargo::rustc-link-search=native={}", config.target_path.to_string_lossy());
+    let lib_path = chez_lib_dir.join("libkernel.a");
+    copy(lib_path, config.target_path.join("libkernel.a"))?;
+    println!("cargo::rustc-link-lib=kernel");
+    let lib_path = build_dir.join("lz4/lib/liblz4.a");
+    copy(lib_path, config.target_path.join("liblz4.a"))?;
+    println!("cargo::rustc-link-lib=lz4");
+    let lib_path = build_dir.join("zlib/libz.a");
+    copy(lib_path, config.target_path.join("libz.a"))?;
+    println!("cargo::rustc-link-lib=z");
+    println!("cargo::rustc-link-lib=ncurses");
+    copy(chez_lib_dir.join("petite.boot"), config.target_path.join("petite.boot"))?;
+    copy(chez_lib_dir.join("scheme.boot"), config.target_path.join("scheme.boot"))?;
     Ok(())
 }
 
