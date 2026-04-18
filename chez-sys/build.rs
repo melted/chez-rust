@@ -82,7 +82,7 @@ fn build_windows(config : &BuildConfig) -> Result<()> {
 }
 
 fn build_unix(config : &BuildConfig) -> Result<()> {
-    let out = Command::new("./configure").args(["-m",&config.platform]).output().expect("failed to run configure");
+    let out = Command::new("./configure").env("CFLAGS", "-fPIC").output().expect("failed to run configure");
     let strout = String::from_utf8(out.stdout).unwrap_or_default();
     let strerr = String::from_utf8(out.stderr).unwrap_or_default();
     println!("{}\n", strerr);
