@@ -1,6 +1,8 @@
 use std::env::{self, current_dir, set_current_dir};
+use std::fs::copy;
 use std::io::{Error, Result};
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::process::Command;
 
 fn main() -> Result<()> {
     let system_lib = env::var("CARGO_FEATURE_SYSTEM").is_ok();
@@ -8,7 +10,9 @@ fn main() -> Result<()> {
         build()?;
     } else {
         // Link to system lib
+        // TODO: It's named differently everywhere, what to do?
     }
+    println!("cargo::rerun-if-changed=build.rs");
     Ok(())
 }
 
@@ -17,7 +21,8 @@ fn build() -> Result<()> {
     let platform = get_platform()?;
     let target_env = env::var("CARGO_CFG_TARGET_ENV").unwrap_or_default();
     let debug = env::var("DEBUG").is_ok();
-    let config = BuildConfig::new_config(platform, debug);
+    let out_dir = env::var_os("OUT_DIR").unwrap();
+    let config = BuildConfig::new_config(platform, debug, Path::new(&out_dir).to_path_buf());
     if cfg!(windows) && target_env != "gnu" {
         build_windows(&config)?;
     } else {
@@ -37,7 +42,32 @@ fn check_chez_dir() -> Result<()> {
 }
 
 fn build_windows(config : &BuildConfig) -> Result<()> {
-    
+    let out = Command::new("./build.bat").args([&config.platform, "/MT"]).output().expect("failed to run build.bat");
+    let strout = String::from_utf8(out.stdout).unwrap_or_default();
+    let strerr = String::from_utf8(out.stderr).unwrap_or_default();
+    println!("{}\n", strerr);
+    println!("{}", strout);
+    let chez_lib_dir = current_dir()?.join(&config.platform).join("boot").join(&config.platform);
+    println!("chezpath= {chez_lib_dir:?}");
+    for file in chez_lib_dir.read_dir()? {
+        if let Ok(entry) = file {
+            println!("entry = {entry:?}");
+            let name_field = entry.file_name();
+            let name = name_field.to_str().unwrap();
+            if name.ends_with("mt.lib") & name.starts_with("csv") {
+                let target = config.target_path.join(name);
+                copy(entry.path(), target)?;
+                println!("cargo::rustc-link-search=native={}", config.target_path.to_string_lossy());
+                println!("cargo::rustc-link-lib=static={}", entry.path().file_stem().unwrap().to_string_lossy());
+                println!("cargo::rerun-if-changed={}", entry.path().to_string_lossy());
+            }
+            if entry.path().extension().unwrap_or_default().to_str() == Some("boot") {
+                let target = config.target_path.join(entry.file_name());
+                copy(entry.path(), target)?;
+                println!("copied boot file {entry:?}");
+            }
+        }
+    }
 
     Ok(())
 }
@@ -70,11 +100,12 @@ fn get_platform() -> Result<String> {
 
 pub struct BuildConfig {
     pub platform:String,
-    pub debug:bool
+    pub debug:bool,
+    pub target_path:PathBuf
 }
 
 impl BuildConfig {
-    pub fn new_config(platform : String, debug:bool) -> Self {
-        BuildConfig { platform, debug }
+    pub fn new_config(platform : String, debug:bool, target_path: PathBuf) -> Self {
+        BuildConfig { platform, debug, target_path }
     }
 }
