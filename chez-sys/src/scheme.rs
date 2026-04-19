@@ -537,6 +537,19 @@ macro_rules! Sforeign_callable_code_object {
     };
 }
 
+#[macro_export]
+macro_rules! Sfixnum {
+    ($e:expr) => {
+        (($e as uptr)*8) as ptr
+    };
+}
+
+#[macro_export]
+macro_rules! Schar {
+    ($e:expr) => { 
+       ((($e as uptr)<<8)|0x16) as ptr
+    };
+}
 
 
 pub const Snil:ptr = 0x26 as ptr;

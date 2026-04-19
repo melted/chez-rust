@@ -21,7 +21,7 @@ fn main() {
     }
 }
 
-unsafe fn register_boot_file(name: &str, bytes:&[u8]) {
+fn register_boot_file(name: &str, bytes:&[u8]) {
     let cstr = CString::new(name).unwrap();
     unsafe {
         Sregister_boot_file_bytes(cstr.as_ptr(), bytes.as_ptr() as *mut c_void, bytes.len() as isize);
