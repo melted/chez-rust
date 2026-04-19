@@ -101,11 +101,25 @@ macro_rules! Sflonump {
     };
 }
 
+#[macro_export]
+macro_rules! is_other {
+    ($e:expr) => {
+         $e as uptr & 0x7 == 0x7
+    };
+}
+
+#[macro_export]
+macro_rules! test_heap_value {
+    ($e:expr, $mask:literal, $i:literal) => {
+        *(($e as uptr + 1) as *mut u64) & $mask == $i
+    };
+}
+
 /// Type predicate for vector
 #[macro_export]
 macro_rules! Svectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x7 == 0x0
+        is_other!($e) && test_heap_value!($e, 0x07, 0x0)
     };
 }
 
@@ -113,7 +127,7 @@ macro_rules! Svectorp {
 #[macro_export]
 macro_rules! Sfxvectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *((($e as uptr) + 1) as ptr) & 0xf == 0x3
+        is_other!($e) && test_heap_value!($e, 0xf, 0x3)
     };
 }
 
@@ -121,7 +135,7 @@ macro_rules! Sfxvectorp {
 #[macro_export]
 macro_rules! Sflvectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0xf == 0xb
+        is_other!($e) && test_heap_value!($e, 0xf, 0xb)
     };
 }
 
@@ -129,7 +143,7 @@ macro_rules! Sflvectorp {
 #[macro_export]
 macro_rules! Sbytevectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x3 == 0x1
+        is_other!($e) && test_heap_value!($e, 0x3, 0x1)
     };
 }
 
@@ -137,7 +151,7 @@ macro_rules! Sbytevectorp {
 #[macro_export]
 macro_rules! Sstringp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x7 == 0x2
+        is_other!($e) && test_heap_value!($e, 0x7, 0x2)
     };
 }
 
@@ -145,7 +159,7 @@ macro_rules! Sstringp {
 #[macro_export]
 macro_rules! Sstencil_vectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x3f == 0xe
+        is_other!($e) && test_heap_value!($e, 0x3f, 0xe)
     };
 }
 
@@ -153,7 +167,7 @@ macro_rules! Sstencil_vectorp {
 #[macro_export]
 macro_rules! Ssystem_stencil_vectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x3f == 0x2e
+        is_other!($e) && test_heap_value!($e, 0x3f, 0x2e)
     };
 }
 
@@ -161,7 +175,7 @@ macro_rules! Ssystem_stencil_vectorp {
 #[macro_export]
 macro_rules! Sany_stencil_vectorp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x1f == 0xe
+        is_other!($e) && test_heap_value!($e, 0x1f, 0xe)
     };
 }
 
@@ -169,7 +183,7 @@ macro_rules! Sany_stencil_vectorp {
 #[macro_export]
 macro_rules! Sbignump {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x1f == 0x6
+        is_other!($e) && test_heap_value!($e, 0x1f, 0x6)
     };
 }
 
@@ -177,7 +191,7 @@ macro_rules! Sbignump {
 #[macro_export]
 macro_rules! Sboxp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0xff == 0x1e
+        is_other!($e) && test_heap_value!($e, 0xff, 0x1e)
     };
 }
 
@@ -185,7 +199,7 @@ macro_rules! Sboxp {
 #[macro_export]
 macro_rules! Sinexactnump {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) == 0x36
+        is_other!($e) && *(($e as uptr + 1) as ptr) == 0x36
     };
 }
 
@@ -193,7 +207,7 @@ macro_rules! Sinexactnump {
 #[macro_export]
 macro_rules! Sexactnump {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) == 0x56
+        is_other!($e) && *(($e as uptr + 1) as ptr) == 0x56
     };
 }
 
@@ -201,7 +215,7 @@ macro_rules! Sexactnump {
 #[macro_export]
 macro_rules! Sratnump {
     ($e:expr) => { 
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) == 0x16
+        is_other!($e) && *(($e as uptr + 1) as ptr) == 0x16
     };
 }
 
@@ -209,7 +223,7 @@ macro_rules! Sratnump {
 #[macro_export]
 macro_rules! Sinputportp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x1ff == 0x1de
+        is_other!($e) && test_heap_value!($e, 0x1ff, 0x1de)
     };
 }
 
@@ -217,7 +231,7 @@ macro_rules! Sinputportp {
 #[macro_export]
 macro_rules! Soutputportp {
     ($e:expr) => {
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x2ff == 0x2de
+        is_other!($e) && test_heap_value!($e, 0x2ff, 0x2de)
     };
 }
 
@@ -225,7 +239,7 @@ macro_rules! Soutputportp {
 #[macro_export]
 macro_rules! Srecordp {
     ($e:expr) => { 
-        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x7 == 0x7
+        is_other!($e) && test_heap_value!($e, 0x7, 0x7)
     };
 }
 
@@ -241,7 +255,7 @@ macro_rules! Sfixnum_value {
 #[macro_export]
 macro_rules! Schar_value {
     ($e:expr) => {
-        (($e as uptr) >> 8) as string_char
+        char::from_u32_unchecked((($e as uptr) >> 8) as u32)
     };
 }
 
@@ -257,7 +271,7 @@ macro_rules! Sboolean_value {
 #[macro_export]
 macro_rules! Scar {
     ($e:expr) => {
-        *((($e as uptr) + 7) as ptr)
+        *((($e as uptr) + 7) as *mut ptr)
     };
 }
 
@@ -265,7 +279,7 @@ macro_rules! Scar {
 #[macro_export]
 macro_rules! Scdr {
     ($e:expr) => {
-        *((($e as uptr) + 15) as ptr)
+        *((($e as uptr) + 15) as *mut ptr)
     };
 }
 
@@ -289,7 +303,7 @@ macro_rules! Svector_length {
 #[macro_export]
 macro_rules! Svector_ref {
     ($e:expr, $i:expr) => {
-        *(((($e as uptr) + 9) as ptr).add($i))
+        *(((($e as uptr) + 9) as *mut ptr).add($i))
     };
 }
 
@@ -305,7 +319,7 @@ macro_rules! Sfxvector_length {
 #[macro_export]
 macro_rules! Sfxvector_ref {
     ($e:expr, $i:expr) => {
-        *(((($e as uptr) + 9) as ptr).add($i))
+        *(((($e as uptr) + 9) as *mut iptr).add($i))
     };
 }
 
@@ -478,10 +492,11 @@ macro_rules! Sfixnum {
     };
 }
 
-
-pub fn Schar(c : char) -> ptr {
-    let p = u64::from(c);
-    (((p as u64) << 8) | 0x16) as ptr
+#[macro_export]
+macro_rules! Schar {
+    ($e:expr) => {
+        ((($e as u32) << 8) | 0x16) as ptr
+    }
 }
 
 pub const Snil: ptr = 0x26 as ptr;
