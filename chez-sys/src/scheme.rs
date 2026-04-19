@@ -547,7 +547,8 @@ macro_rules! Sfixnum {
 #[macro_export]
 macro_rules! Schar {
     ($e:expr) => { 
-       ((($e as uptr)<<8)|0x16) as ptr
+       let p = u32::from::<char>($e); 
+       ((p<<8)|0x16) as ptr
     };
 }
 
