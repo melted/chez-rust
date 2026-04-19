@@ -35,19 +35,28 @@ fn check_chez_dir() -> Result<()> {
     let path = Path::new("ChezScheme");
     if !path.exists() {
         println!("cargo::error=No ChezScheme directory. Check out the git submodule.");
-        return Err(Error::new(std::io::ErrorKind::NotFound, "ChezScheme not found"));
+        return Err(Error::new(
+            std::io::ErrorKind::NotFound,
+            "ChezScheme not found",
+        ));
     }
     set_current_dir(path)?;
     Ok(())
 }
 
-fn build_windows(config : &BuildConfig) -> Result<()> {
-    let out = Command::new("./build.bat").args([&config.platform, "/MT"]).output().expect("failed to run build.bat");
+fn build_windows(config: &BuildConfig) -> Result<()> {
+    let out = Command::new("./build.bat")
+        .args([&config.platform, "/MT"])
+        .output()
+        .expect("failed to run build.bat");
     let strout = String::from_utf8(out.stdout).unwrap_or_default();
     let strerr = String::from_utf8(out.stderr).unwrap_or_default();
     println!("{}\n", strerr);
     println!("{}", strout);
-    let chez_lib_dir = current_dir()?.join(&config.platform).join("boot").join(&config.platform);
+    let chez_lib_dir = current_dir()?
+        .join(&config.platform)
+        .join("boot")
+        .join(&config.platform);
     println!("chezpath= {chez_lib_dir:?}");
     for file in chez_lib_dir.read_dir()? {
         if let Ok(entry) = file {
@@ -57,8 +66,14 @@ fn build_windows(config : &BuildConfig) -> Result<()> {
             if name.ends_with("mt.lib") & name.starts_with("csv") {
                 let target = config.target_path.join(name);
                 copy(entry.path(), target)?;
-                println!("cargo::rustc-link-search=native={}", config.target_path.to_string_lossy());
-                println!("cargo::rustc-link-lib=static={}", entry.path().file_stem().unwrap().to_string_lossy());
+                println!(
+                    "cargo::rustc-link-search=native={}",
+                    config.target_path.to_string_lossy()
+                );
+                println!(
+                    "cargo::rustc-link-lib=static={}",
+                    entry.path().file_stem().unwrap().to_string_lossy()
+                );
                 println!("cargo::rerun-if-changed={}", entry.path().to_string_lossy());
             }
             if entry.path().extension().unwrap_or_default().to_str() == Some("boot") {
@@ -68,11 +83,26 @@ fn build_windows(config : &BuildConfig) -> Result<()> {
             }
         }
     }
-    let zlib_path = current_dir()?.join(&config.platform).join("zlibmts").join("zlib.lib");
-    copy(&zlib_path, config.target_path.join(&zlib_path.file_name().unwrap()))?;
-    println!("cargo::rustc-link-lib=static={}", zlib_path.file_stem().unwrap().to_string_lossy());
-    let lz4_path = current_dir()?.join(&config.platform).join("lz4mts/lib").join("liblz4.lib");
-    copy(&lz4_path, config.target_path.join(&lz4_path.file_name().unwrap()))?;
+    let zlib_path = current_dir()?
+        .join(&config.platform)
+        .join("zlibmts")
+        .join("zlib.lib");
+    copy(
+        &zlib_path,
+        config.target_path.join(&zlib_path.file_name().unwrap()),
+    )?;
+    println!(
+        "cargo::rustc-link-lib=static={}",
+        zlib_path.file_stem().unwrap().to_string_lossy()
+    );
+    let lz4_path = current_dir()?
+        .join(&config.platform)
+        .join("lz4mts/lib")
+        .join("liblz4.lib");
+    copy(
+        &lz4_path,
+        config.target_path.join(&lz4_path.file_name().unwrap()),
+    )?;
     println!("cargo::rustc-link-lib=static=liblz4");
     println!("cargo::rustc-link-lib=advapi32");
     println!("cargo::rustc-link-lib=user32");
@@ -81,8 +111,11 @@ fn build_windows(config : &BuildConfig) -> Result<()> {
     Ok(())
 }
 
-fn build_unix(config : &BuildConfig) -> Result<()> {
-    let out = Command::new("./configure").env("CFLAGS", "-fPIC").output().expect("failed to run configure");
+fn build_unix(config: &BuildConfig) -> Result<()> {
+    let out = Command::new("./configure")
+        .env("CFLAGS", "-fPIC")
+        .output()
+        .expect("failed to run configure");
     let strout = String::from_utf8(out.stdout).unwrap_or_default();
     let strerr = String::from_utf8(out.stderr).unwrap_or_default();
     println!("{}\n", strerr);
@@ -95,7 +128,10 @@ fn build_unix(config : &BuildConfig) -> Result<()> {
     let build_dir = current_dir()?.join(&config.platform);
     let chez_lib_dir = build_dir.join("boot").join(&config.platform);
     println!("chezpath= {chez_lib_dir:?}");
-    println!("cargo::rustc-link-search=native={}", config.target_path.to_string_lossy());
+    println!(
+        "cargo::rustc-link-search=native={}",
+        config.target_path.to_string_lossy()
+    );
     let lib_path = chez_lib_dir.join("libkernel.a");
     copy(lib_path, config.target_path.join("libkernel.a"))?;
     println!("cargo::rustc-link-lib=kernel");
@@ -106,8 +142,14 @@ fn build_unix(config : &BuildConfig) -> Result<()> {
     copy(lib_path, config.target_path.join("libz.a"))?;
     println!("cargo::rustc-link-lib=z");
     println!("cargo::rustc-link-lib=ncurses");
-    copy(chez_lib_dir.join("petite.boot"), config.target_path.join("petite.boot"))?;
-    copy(chez_lib_dir.join("scheme.boot"), config.target_path.join("scheme.boot"))?;
+    copy(
+        chez_lib_dir.join("petite.boot"),
+        config.target_path.join("petite.boot"),
+    )?;
+    copy(
+        chez_lib_dir.join("scheme.boot"),
+        config.target_path.join("scheme.boot"),
+    )?;
     Ok(())
 }
 
@@ -119,7 +161,7 @@ fn get_platform() -> Result<String> {
         "x86_64" => "a6",
         "i686" => "i3",
         "riscv64gc" => "rv64",
-        _ => "pb64l"
+        _ => "pb64l",
     };
     let pl = match os.as_str() {
         "macos" => "osx",
@@ -128,19 +170,28 @@ fn get_platform() -> Result<String> {
         "freebsd" => "fb",
         "netbsd" => "nb",
         "openbsd" => "ob",
-        _ => return Err(Error::new(std::io::ErrorKind::Unsupported, "Unsupported OS"))
+        _ => {
+            return Err(Error::new(
+                std::io::ErrorKind::Unsupported,
+                "Unsupported OS",
+            ));
+        }
     };
-    Ok(format!("t{}{}",cpu, pl))
+    Ok(format!("t{}{}", cpu, pl))
 }
 
 pub struct BuildConfig {
-    pub platform:String,
-    pub debug:bool,
-    pub target_path:PathBuf
+    pub platform: String,
+    pub debug: bool,
+    pub target_path: PathBuf,
 }
 
 impl BuildConfig {
-    pub fn new_config(platform : String, debug:bool, target_path: PathBuf) -> Self {
-        BuildConfig { platform, debug, target_path }
+    pub fn new_config(platform: String, debug: bool, target_path: PathBuf) -> Self {
+        BuildConfig {
+            platform,
+            debug,
+            target_path,
+        }
     }
 }

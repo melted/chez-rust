@@ -10,7 +10,6 @@
 
 use std::ffi::c_void;
 
-
 pub type Sint32_t = i32;
 pub type Suint32_t = u32;
 pub type Sint64_t = i64;
@@ -37,7 +36,6 @@ macro_rules! Scharp {
         $e as usize & 0xFF == 0x16
     };
 }
-
 
 /// Type predicate for null
 #[macro_export]
@@ -107,10 +105,7 @@ macro_rules! Sflonump {
 #[macro_export]
 macro_rules! Svectorp {
     ($e:expr) => {
-        let p = $e as uptr;
-        p & 0x7 == 0x7 && {
-            *((p+1) as ptr) & 0x7 == 0x0
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x7 == 0x0
     };
 }
 
@@ -118,11 +113,7 @@ macro_rules! Svectorp {
 #[macro_export]
 macro_rules! Sfxvectorp {
     ($e:expr) => {
-        let p = $e as uptr;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as ptr;
-            *a & 0xf == 0x3
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *((($e as uptr) + 1) as ptr) & 0xf == 0x3
     };
 }
 
@@ -130,11 +121,7 @@ macro_rules! Sfxvectorp {
 #[macro_export]
 macro_rules! Sflvectorp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0xf == 0xb
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0xf == 0xb
     };
 }
 
@@ -142,11 +129,7 @@ macro_rules! Sflvectorp {
 #[macro_export]
 macro_rules! Sbytevectorp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x3 == 0x1
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x3 == 0x1
     };
 }
 
@@ -154,11 +137,7 @@ macro_rules! Sbytevectorp {
 #[macro_export]
 macro_rules! Sstringp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x7 == 0x2
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x7 == 0x2
     };
 }
 
@@ -166,11 +145,7 @@ macro_rules! Sstringp {
 #[macro_export]
 macro_rules! Sstencil_vectorp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x3f == 0xe
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x3f == 0xe
     };
 }
 
@@ -178,11 +153,7 @@ macro_rules! Sstencil_vectorp {
 #[macro_export]
 macro_rules! Ssystem_stencil_vectorp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x3f == 0x2e
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x3f == 0x2e
     };
 }
 
@@ -190,11 +161,7 @@ macro_rules! Ssystem_stencil_vectorp {
 #[macro_export]
 macro_rules! Sany_stencil_vectorp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x1f == 0xe
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x1f == 0xe
     };
 }
 
@@ -202,11 +169,7 @@ macro_rules! Sany_stencil_vectorp {
 #[macro_export]
 macro_rules! Sbignump {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x1f == 0x6
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x1f == 0x6
     };
 }
 
@@ -214,11 +177,7 @@ macro_rules! Sbignump {
 #[macro_export]
 macro_rules! Sboxp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0xff == 0x1e
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0xff == 0x1e
     };
 }
 
@@ -226,11 +185,7 @@ macro_rules! Sboxp {
 #[macro_export]
 macro_rules! Sinexactnump {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a == 0x36
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) == 0x36
     };
 }
 
@@ -238,23 +193,15 @@ macro_rules! Sinexactnump {
 #[macro_export]
 macro_rules! Sexactnump {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a == 0x56
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) == 0x56
     };
 }
 
 // Type predicate for ratnum
 #[macro_export]
 macro_rules! Sratnump {
-    ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a == 0x16
-        } 
+    ($e:expr) => { 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) == 0x16
     };
 }
 
@@ -262,11 +209,7 @@ macro_rules! Sratnump {
 #[macro_export]
 macro_rules! Sinputportp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 1ff == 0x1de
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x1ff == 0x1de
     };
 }
 
@@ -274,23 +217,15 @@ macro_rules! Sinputportp {
 #[macro_export]
 macro_rules! Soutputportp {
     ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 2ff == 0x2de
-        } 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x2ff == 0x2de
     };
 }
 
 /// Type predicate for record
 #[macro_export]
 macro_rules! Srecordp {
-    ($e:expr) => {
-        let p = $e as usize;
-        p & 0x7 == 0x7 && {
-            let a = (p+1) as *const usize;
-            *a & 0x7 == 0x7
-        } 
+    ($e:expr) => { 
+        ($e as uptr) & 0x7 == 0x7 && *(($e as uptr + 1) as ptr) & 0x7 == 0x7
     };
 }
 
@@ -298,7 +233,7 @@ macro_rules! Srecordp {
 #[macro_export]
 macro_rules! Sfixnum_value {
     ($e:expr) => {
-        ($e as iptr)/8 
+        ($e as iptr) / 8
     };
 }
 
@@ -306,7 +241,7 @@ macro_rules! Sfixnum_value {
 #[macro_export]
 macro_rules! Schar_value {
     ($e:expr) => {
-        (($e as uptr) >> 8) as string_char 
+        (($e as uptr) >> 8) as string_char
     };
 }
 
@@ -314,7 +249,7 @@ macro_rules! Schar_value {
 #[macro_export]
 macro_rules! Sboolean_value {
     ($e:expr) => {
-        $e != Sfalse 
+        $e != Sfalse
     };
 }
 
@@ -515,7 +450,6 @@ macro_rules! Sbytevector_u8_set {
     };
 }
 
-
 #[macro_export]
 macro_rules! Srecord_uniform_ref {
     ($e:expr, $i:expr) => {
@@ -526,7 +460,7 @@ macro_rules! Srecord_uniform_ref {
 #[macro_export]
 macro_rules! Sforeign_callable_entry_point {
     ($e:expr) => {
-        ((($e as uptr) + 65) as * mut fn())
+        ((($e as uptr) + 65) as *mut fn())
     };
 }
 
@@ -540,22 +474,19 @@ macro_rules! Sforeign_callable_code_object {
 #[macro_export]
 macro_rules! Sfixnum {
     ($e:expr) => {
-        (($e as uptr)*8) as ptr
-    };
-}
-
-#[macro_export]
-macro_rules! Schar {
-    ($e:expr) => { 
-       let p = u32::from::<char>($e); 
-       ((p<<8)|0x16) as ptr
+        (($e as uptr) * 8) as ptr
     };
 }
 
 
-pub const Snil:ptr = 0x26 as ptr;
-pub const Strue:ptr = 0xe as ptr;
-pub const Sfalse:ptr = 0x6 as ptr;
+pub fn Schar(c : char) -> ptr {
+    let p = u64::from(c);
+    (((p as u64) << 8) | 0x16) as ptr
+}
+
+pub const Snil: ptr = 0x26 as ptr;
+pub const Strue: ptr = 0xe as ptr;
+pub const Sfalse: ptr = 0x6 as ptr;
 
 #[macro_export]
 macro_rules! Sboolean {
@@ -564,11 +495,9 @@ macro_rules! Sboolean {
     };
 }
 
-pub const Sbwp_object:ptr = 0x4e as ptr;
-pub const Seof_object:ptr = 0x36 as ptr;
-pub const Svoid:ptr = 0x2e as ptr;
-
-
+pub const Sbwp_object: ptr = 0x4e as ptr;
+pub const Seof_object: ptr = 0x36 as ptr;
+pub const Svoid: ptr = 0x2e as ptr;
 
 unsafe extern "C" {
 
@@ -671,21 +600,21 @@ unsafe extern "C" {
 
     pub fn Sset_top_level_value(sym: ptr, obj: ptr);
 
-    /// In practice, the best way to ensure that C code does not retain pointers to Scheme 
-    /// objects is to immediately convert the Scheme objects into C equivalents, if 
-    /// possible. In certain cases, it is not possible to do so, yet retention of the Scheme 
-    /// object is essential to the design of the C portions of the program. In these cases, 
-    /// the object may be locked via the library routine Slock_object (or from Scheme, the 
+    /// In practice, the best way to ensure that C code does not retain pointers to Scheme
+    /// objects is to immediately convert the Scheme objects into C equivalents, if
+    /// possible. In certain cases, it is not possible to do so, yet retention of the Scheme
+    /// object is essential to the design of the C portions of the program. In these cases,
+    /// the object may be locked via the library routine Slock_object (or from Scheme, the
     /// equivalent procedure lock-object).
 
-    /// Locking an object prevents the storage manager from reclaiming or relocating the 
-    /// object. Locking should be used sparingly, as it introduces memory fragmentation and 
-    /// increases storage management overhead. Locking can also lead to accidental retention 
-    /// of storage if objects are not unlocked. Locking objects that have been made static 
+    /// Locking an object prevents the storage manager from reclaiming or relocating the
+    /// object. Locking should be used sparingly, as it introduces memory fragmentation and
+    /// increases storage management overhead. Locking can also lead to accidental retention
+    /// of storage if objects are not unlocked. Locking objects that have been made static
     /// via heap compaction (see Scompact_heap above) is unnecessary but harmless.
-    /// 
-    /// An object may be locked more than once by successive calls to Slock_object or 
-    /// lock-object, in which case it must be unlocked by an equal number of calls to 
+    ///
+    /// An object may be locked more than once by successive calls to Slock_object or
+    /// lock-object, in which case it must be unlocked by an equal number of calls to
     /// Sunlock_object or unlock-object before it is truly unlocked.
     pub fn Slock_object(obj: ptr);
 
@@ -695,18 +624,18 @@ unsafe extern "C" {
     /// The function Slocked_objectp can be used to determine if an object is locked.
     pub fn Slocked_objectp(obj: ptr) -> ::std::os::raw::c_int;
 
-    /// Foreign entry points may be made visible to Scheme via Sforeign_symbol or 
+    /// Foreign entry points may be made visible to Scheme via Sforeign_symbol or
     /// Sregister_symbol.
-    /// 
-    /// External entry points in object files or shared objects loaded as a result of a call 
-    /// to load-shared-object are automatically made visible by the system. Once a foreign 
-    /// entry point is made visible, it may be named in a foreign-procedure expression to 
-    /// create a Scheme-callable version of the entry point. Sforeign_symbol and 
-    /// Sregister_symbol allow programs to register nonexternal entry points, entry points 
-    /// in code linked statically with Chez Scheme, and entry points into code loaded 
-    /// directly from C, i.e., without load-shared-object. Sforeign_symbol and 
-    /// Sregister_symbol differ only in that Sforeign_symbol raises an exception when an 
-    /// attempt is made to register an existing name, whereas Sregister_symbol permits 
+    ///
+    /// External entry points in object files or shared objects loaded as a result of a call
+    /// to load-shared-object are automatically made visible by the system. Once a foreign
+    /// entry point is made visible, it may be named in a foreign-procedure expression to
+    /// create a Scheme-callable version of the entry point. Sforeign_symbol and
+    /// Sregister_symbol allow programs to register nonexternal entry points, entry points
+    /// in code linked statically with Chez Scheme, and entry points into code loaded
+    /// directly from C, i.e., without load-shared-object. Sforeign_symbol and
+    /// Sregister_symbol differ only in that Sforeign_symbol raises an exception when an
+    /// attempt is made to register an existing name, whereas Sregister_symbol permits
     /// existing names to be redefined.
     pub fn Sforeign_symbol(name: *const ::std::os::raw::c_char, addr: *mut ::std::os::raw::c_void);
 
@@ -725,14 +654,14 @@ unsafe extern "C" {
     /// Call a Scheme function with three arguments
     pub fn Scall3(procedure: ptr, obj1: ptr, obj2: ptr, obj3: ptr) -> ptr;
 
-    /// A C procedure first calls Sinitframe with one argument, the number of arguments to 
-    /// be passed to Scheme. It then calls Sput_arg once for each argument (in any order), 
-    /// passing Sput_arg the argument number (starting with 1) and the argument. Finally, it 
-    /// calls Scall to perform the call, passing it the Scheme procedure and the number of 
-    /// arguments (the same number as in the call to Sinitframe). Programmers should ensure 
-    /// a Scheme call initiated via Sinitframe is completed via Scall before any other calls 
-    /// to Scheme are made and before a return to Scheme is attempted. If for any reason the 
-    /// call is not completed after Sinitframe has been called, it may not be possible to 
+    /// A C procedure first calls Sinitframe with one argument, the number of arguments to
+    /// be passed to Scheme. It then calls Sput_arg once for each argument (in any order),
+    /// passing Sput_arg the argument number (starting with 1) and the argument. Finally, it
+    /// calls Scall to perform the call, passing it the Scheme procedure and the number of
+    /// arguments (the same number as in the call to Sinitframe). Programmers should ensure
+    /// a Scheme call initiated via Sinitframe is completed via Scall before any other calls
+    /// to Scheme are made and before a return to Scheme is attempted. If for any reason the
+    /// call is not completed after Sinitframe has been called, it may not be possible to
     /// return to Scheme.
     pub fn Sinitframe(n: iptr);
 
@@ -741,64 +670,64 @@ unsafe extern "C" {
     pub fn Scall(procedure: ptr, n: iptr) -> ptr;
 
     /// Skernel_version returns a string representing the Scheme version. It should be
-    /// compared against the value of the VERSION preprocessor macro before any of the 
-    /// initialization functions listed above are used to verify that the correct "scheme.h" 
+    /// compared against the value of the VERSION preprocessor macro before any of the
+    /// initialization functions listed above are used to verify that the correct "scheme.h"
     /// header file has been used.
     pub fn Skernel_version() -> *const ::std::os::raw::c_char;
 
-    /// Sretain_static_relocation causes relocation information to be retained for static 
-    /// generation code objects created by heap compaction for the benefit of compute-size 
+    /// Sretain_static_relocation causes relocation information to be retained for static
+    /// generation code objects created by heap compaction for the benefit of compute-size
     /// and related procedures.
     pub fn Sretain_static_relocation();
 
-    /// Sset_verbose sets verbose mode on for nonzero values of v and off when v is zero. In 
-    /// verbose mode, the system displays a trace of the search process for subsequently 
+    /// Sset_verbose sets verbose mode on for nonzero values of v and off when v is zero. In
+    /// verbose mode, the system displays a trace of the search process for subsequently
     /// registered boot files.
     pub fn Sset_verbose(v: ::std::os::raw::c_int);
 
-    /// Sscheme_init causes the Scheme system to initialize its static memory in preparation 
+    /// Sscheme_init causes the Scheme system to initialize its static memory in preparation
     /// for boot file registration. The _abnormal_exit_ parameter should be a
-    /// (possibly null) pointer to a C function of no arguments that takes appropriate 
+    /// (possibly null) pointer to a C function of no arguments that takes appropriate
     /// action if the initialization or subsequent heap-building process fails.
     /// If null, the default action is to call exit(1).
     pub fn Sscheme_init(abnormal_exit: ::std::option::Option<unsafe extern "C" fn()>);
 
-    /// Sregister_boot_file searches for a boot file and registers it for loading. If the 
-    /// given boot file path is absolute or starts with a . or .. path element, then the 
-    /// path is used relative to the current directory; otherwise, the boot file is found 
-    /// through a search as described in Section 2.9, and "scheme" is assumed as the 
-    /// executable name for resolving a "%x" escape when the executable path is not 
-    /// otherwise available from the operating system. For the first boot file registered 
-    /// only, the system also searches for the boot files upon which the named file depends, 
+    /// Sregister_boot_file searches for a boot file and registers it for loading. If the
+    /// given boot file path is absolute or starts with a . or .. path element, then the
+    /// path is used relative to the current directory; otherwise, the boot file is found
+    /// through a search as described in Section 2.9, and "scheme" is assumed as the
+    /// executable name for resolving a "%x" escape when the executable path is not
+    /// otherwise available from the operating system. For the first boot file registered
+    /// only, the system also searches for the boot files upon which the named file depends,
     /// either directly or indirectly.
     pub fn Sregister_boot_file(name: *const ::std::os::raw::c_char);
 
     /// register_boot_executable_relative_file is similar, but accepts a path to the
-    /// executable instead of assuming "scheme", so it should be preferred when using a boot 
+    /// executable instead of assuming "scheme", so it should be preferred when using a boot
     /// file path that may be resolved relative to the executable.
     pub fn Sregister_boot_executable_relative_file(
         execpath: *const ::std::os::raw::c_char,
         name: *const ::std::os::raw::c_char,
     );
 
-    /// Sregister_boot_relative_file always treats a relative path as relative to the 
-    /// current directory, so the executable path is not needed. In all of those cases, the 
+    /// Sregister_boot_relative_file always treats a relative path as relative to the
+    /// current directory, so the executable path is not needed. In all of those cases, the
     /// boot file is opened but not loaded until the heap is built via Sbuild_heap.
     pub fn Sregister_boot_relative_file(name: *const ::std::os::raw::c_char);
 
-    /// Sregister_boot_file_fd provides a specific boot file as a file descriptor, the given 
-    /// file name is used only for error reporting, and the file descriptor is not read 
+    /// Sregister_boot_file_fd provides a specific boot file as a file descriptor, the given
+    /// file name is used only for error reporting, and the file descriptor is not read
     /// until until the heap is built via Sbuild_heap.
     pub fn Sregister_boot_file_fd(name: *const ::std::os::raw::c_char, fd: ::std::os::raw::c_int);
 
-    /// The Sregister_boot_file_fd_region function is an alternative to 
-    /// Sregister_boot_file_fd that allows the same file descriptor to be used for multiple 
-    /// boot files using different offsets into the file. The len argument is used as a 
-    /// hint, but it can be 0 to mean that the size is unknown, or it can be larger than the 
-    /// actual boot content; it must not be non-0 and smaller than the boot content, and the 
-    /// boot content must be self-terminating independent of len. No search is performed for 
-    /// dependencies. If the same file descriptor is used for multiple boot files, then 
-    /// close_after should be non-zero only for the last one. The boot file content is read 
+    /// The Sregister_boot_file_fd_region function is an alternative to
+    /// Sregister_boot_file_fd that allows the same file descriptor to be used for multiple
+    /// boot files using different offsets into the file. The len argument is used as a
+    /// hint, but it can be 0 to mean that the size is unknown, or it can be larger than the
+    /// actual boot content; it must not be non-0 and smaller than the boot content, and the
+    /// boot content must be self-terminating independent of len. No search is performed for
+    /// dependencies. If the same file descriptor is used for multiple boot files, then
+    /// close_after should be non-zero only for the last one. The boot file content is read
     /// only when Sbuild_heap is called.
     pub fn Sregister_boot_file_fd_region(
         name: *const ::std::os::raw::c_char,
@@ -808,9 +737,9 @@ unsafe extern "C" {
         close_after: ::std::os::raw::c_int,
     );
 
-    /// The Sregister_boot_file_bytes function is another alternative to the 
-    /// Sregister_boot_file functions that registers boot-file content that is already 
-    /// loaded into memory, instead of reading from a file. The registered bytes must remain 
+    /// The Sregister_boot_file_bytes function is another alternative to the
+    /// Sregister_boot_file functions that registers boot-file content that is already
+    /// loaded into memory, instead of reading from a file. The registered bytes must remain
     /// available until Sbuild_heap reads them.
     pub fn Sregister_boot_file_bytes(
         name: *const ::std::os::raw::c_char,
@@ -825,7 +754,6 @@ unsafe extern "C" {
 
     // Not used
     //pub fn Ssave_heap(arg1: *const ::std::os::raw::c_char, arg2: ::std::os::raw::c_int);
-
 
     pub fn Sbuild_heap(
         exec: *const ::std::os::raw::c_char,
@@ -863,13 +791,13 @@ unsafe extern "C" {
 
     pub fn Sdestroy_thread() -> ::std::os::raw::c_int;
 
-    /// Sgetenv returns the UTF-8-encoded value of UTF-8-encoded environment variable name 
-    /// if found and NULL otherwise. Call free on the returned value when it is no longer 
+    /// Sgetenv returns the UTF-8-encoded value of UTF-8-encoded environment variable name
+    /// if found and NULL otherwise. Call free on the returned value when it is no longer
     /// needed.
     #[cfg(target_os = "windows")]
     pub fn Sgetenv(name: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_char;
 
-    /// Sutf8_to_wide and Swide_to_utf8 convert between UTF-8-encoded and UTF-16LE-encoded 
+    /// Sutf8_to_wide and Swide_to_utf8 convert between UTF-8-encoded and UTF-16LE-encoded
     /// null-terminated strings. Call free on the returned value when it is no longer needed.
     #[cfg(target_os = "windows")]
     pub fn Sutf8_to_wide(s: *const ::std::os::raw::c_char) -> *mut ::std::os::raw::c_ushort;

@@ -1,6 +1,8 @@
 #![cfg(test)]
 
-use crate::{boot, scheme::{Sscheme_deinit, Sscheme_init}};
+use crate::{
+    Schar_value, Scharp, boot, scheme::{Schar, Sscheme_deinit, Sscheme_init, string_char, uptr}
+};
 
 #[test]
 fn test_embedded_boot_file() {
@@ -15,4 +17,12 @@ fn test_init() {
     unsafe {
         Sscheme_init(None);
     }
+}
+
+#[test]
+fn test_char() {
+    let m = Schar('m');
+    assert!(Scharp!(m));
+    let c = Schar_value!(m);
+    dbg!(c);
 }

@@ -1,6 +1,16 @@
-use std::{env::{self, args}, ffi::{CStr, CString, c_void}};
+use std::{
+    env::{self, args},
+    ffi::{CStr, CString, c_void},
+};
 
-use chez_sys::{self, Sfixnum_value, Sfixnump, boot::{petite_boot, scheme_boot}, scheme::{iptr, Sbuild_heap, Scall1, Scall3, Sinteger, Sregister_boot_file_bytes, Sscheme_deinit, Sscheme_init, Sstring, Sstring_to_symbol, Stop_level_value}};
+use chez_sys::{
+    self, Sfixnum_value, Sfixnump,
+    boot::{petite_boot, scheme_boot},
+    scheme::{
+        Sbuild_heap, Scall1, Scall3, Sinteger, Sregister_boot_file_bytes, Sscheme_deinit,
+        Sscheme_init, Sstring, Sstring_to_symbol, Stop_level_value, iptr,
+    },
+};
 
 fn main() {
     unsafe {
@@ -21,9 +31,13 @@ fn main() {
     }
 }
 
-fn register_boot_file(name: &str, bytes:&[u8]) {
+fn register_boot_file(name: &str, bytes: &[u8]) {
     let cstr = CString::new(name).unwrap();
     unsafe {
-        Sregister_boot_file_bytes(cstr.as_ptr(), bytes.as_ptr() as *mut c_void, bytes.len() as isize);
+        Sregister_boot_file_bytes(
+            cstr.as_ptr(),
+            bytes.as_ptr() as *mut c_void,
+            bytes.len() as isize,
+        );
     }
 }

@@ -1,6 +1,12 @@
-use std::{ffi::{CStr, CString}, os::raw::c_char};
+use std::{
+    ffi::{CStr, CString},
+    os::raw::c_char,
+};
 
-use chez_sys::{self, Sfixnump, boot, scheme::{Skernel_version, Sscheme_init}};
+use chez_sys::{
+    self, Sfixnump, boot,
+    scheme::{Skernel_version, Sscheme_init},
+};
 
 fn main() {
     let n = boot::petite_boot().len();
