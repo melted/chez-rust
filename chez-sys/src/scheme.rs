@@ -442,7 +442,7 @@ macro_rules! Sstring_set {
 #[macro_export]
 macro_rules! Sfxvector_set {
     ($e:expr, $i:expr, $n:expr) => {
-        Sfxvector_ref($e, $i) = n;
+        Sfxvector_ref!($e, $i) = $n;
     };
 }
 
@@ -451,7 +451,7 @@ macro_rules! Sfxvector_set {
 #[macro_export]
 macro_rules! Sflvector_set {
     ($e:expr, $i:expr, $n:expr) => {
-        Sflvector_ref($e, $i) = n;
+        Sflvector_ref!($e, $i) = $n;
     };
 }
 
@@ -460,7 +460,7 @@ macro_rules! Sflvector_set {
 #[macro_export]
 macro_rules! Sbytevector_u8_set {
     ($e:expr, $i:expr, $n:expr) => {
-        Sbytevector_u8_ref($e, $i) = n;
+        Sbytevector_u8_ref!($e, $i) = $n;
     };
 }
 
