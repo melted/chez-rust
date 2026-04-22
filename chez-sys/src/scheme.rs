@@ -335,7 +335,7 @@ macro_rules! Sflvector_length {
 #[macro_export]
 macro_rules! Sflvector_ref {
     ($e:expr, $i:expr) => {
-        *(((($e as uptr) + 9) as *const f64).add($i))
+        *(((($e as uptr) + 9) as *mut f64).add($i))
     };
 }
 
@@ -351,7 +351,7 @@ macro_rules! Sbytevector_length {
 #[macro_export]
 macro_rules! Sbytevector_u8_ref {
     ($e:expr, $i:expr) => {
-        *(((($e as uptr) + 9) as *const u8).add($i))
+        *(((($e as uptr) + 9) as *mut u8).add($i))
     };
 }
 
