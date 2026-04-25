@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use crate::{ Scar, Scdr, Schar, Schar_value, Scharp, Svector_ref, Svectorp, boot, helpers::{scheme_setup, scheme_teardown}, is_other, scheme::{Scons, Sfalse, Sinteger, Sinteger_value, Smake_vector, Sscheme_deinit, Sscheme_init, Svector_set, ptr, string_char, uptr}, test_heap_value
+use crate::{ Scar, Scdr, Schar, Schar_value, Scharp, Svector_ref, Svectorp, boot, helpers::{scheme_setup, scheme_teardown}, internal::{alloc_bignum, bignum_bigits, bignum_sign, bignum_size}, is_other, scheme::{Scons, Sfalse, Sinteger, Sinteger_value, Smake_vector, Sscheme_deinit, Sscheme_init, Svector_set, ptr, string_char, uptr}, test_heap_value
 };
 
 #[test]
@@ -56,5 +56,16 @@ fn test_vector() {
         let n = Svector_ref!(v, 2);
         assert_eq!(n, Sfalse);
     }
+    scheme_teardown();
+}
+
+
+#[test]
+fn test_bignum_alloc() {
+    scheme_setup("test");
+    let bn = alloc_bignum(false, 8);
+    assert_eq!(bignum_sign(bn), false);
+    assert_eq!(bignum_size(bn), 8);
+    dbg!(bignum_bigits(bn), bn);
     scheme_teardown();
 }
