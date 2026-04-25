@@ -1,6 +1,6 @@
 #![cfg(test)]
 
-use crate::{ Scar, Scdr, Schar, Schar_value, Scharp, Svector_ref, Svectorp, boot, helpers::{scheme_setup, scheme_teardown}, internal::{alloc_bignum, bignum_bigits, bignum_sign, bignum_size}, is_other, scheme::{Scons, Sfalse, Sinteger, Sinteger_value, Smake_vector, Sscheme_deinit, Sscheme_init, Svector_set, ptr, string_char, uptr}, test_heap_value
+use crate::{ Scar, Scdr, Schar, Schar_value, Scharp, Svector_ref, Svectorp, boot, helpers::{scheme_setup, scheme_teardown}, internal::{alloc_bignum, bignum_bigits, bignum_sign, bignum_size}, is_other, scheme::{Scons, Sfalse, Sinteger, Sinteger_value, Smake_vector, Sscheme_init, Svector_set, ptr, uptr}, test_heap_value
 };
 
 #[test]

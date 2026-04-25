@@ -1,4 +1,12 @@
-//! Internal Chez Scheme APIs
+//! Internal Chez Scheme APIs.
+//! 
+//! The C API as documented in the Chez Scheme Users Guide lack functions
+//! for allocating and inspecting bignums, and there is no way to efficiently
+//! do it via Scheme functions. So this module uses nonpublic functions for
+//! bignum allocation and inspection. This can be used to efficiently convert
+//! Scheme bignums to and from Rust bignums. That isn't provided here, since
+//! I want to keep this library dependency-free. 
+#![warn(nonstandard_style)]
 
 use std::ffi::c_void;
 
