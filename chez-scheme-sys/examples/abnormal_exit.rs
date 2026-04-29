@@ -3,7 +3,7 @@ use std::{
     process::exit,
 };
 
-use chez_sys::scheme::{Sregister_boot_file_bytes, Sscheme_deinit, Sscheme_init};
+use chez_scheme_sys::scheme::{Sregister_boot_file_bytes, Sscheme_deinit, Sscheme_init};
 
 #[unsafe(no_mangle)]
 unsafe extern "C" fn failed_setup() {

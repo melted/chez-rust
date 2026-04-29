@@ -3,7 +3,7 @@ use std::{
     os::raw::c_char,
 };
 
-use chez_sys::{
+use chez_scheme_sys::{
     self, Sfixnump, boot,
     scheme::{Skernel_version, Sscheme_init},
 };

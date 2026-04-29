@@ -6,7 +6,7 @@
 //! bignum allocation and inspection. This can be used to efficiently convert
 //! Scheme bignums to and from Rust bignums. That isn't provided here, since
 //! I want to keep this library dependency-free. 
-#![warn(nonstandard_style)]
+#![allow(nonstandard_style)]
 
 use std::ffi::c_void;
 

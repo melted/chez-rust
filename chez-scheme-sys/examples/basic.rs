@@ -3,7 +3,7 @@ use std::{
     ffi::{CStr, CString, c_void},
 };
 
-use chez_sys::{
+use chez_scheme_sys::{
     self, Sfixnum_value, Sfixnump,
     boot::{petite_boot, scheme_boot},
     scheme::{
