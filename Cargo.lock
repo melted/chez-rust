@@ -7,5 +7,5 @@ name = "chez-scheme"
 version = "0.1.0"
 
 [[package]]
-name = "chez-sys"
+name = "chez-scheme-sys"
 version = "0.1.0"

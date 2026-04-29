@@ -1,3 +1,3 @@
 [workspace]
-members = ["chez-sys", "chez-scheme"]
+members = ["chez-scheme-sys", "chez-scheme"]
 resolver = "3"

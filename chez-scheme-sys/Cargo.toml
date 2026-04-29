@@ -1,5 +1,5 @@
 [package]
-name = "chez-sys"
+name = "chez-scheme-sys"
 version = "0.1.0"
 edition = "2024"
 
@@ -8,4 +8,4 @@ edition = "2024"
 [build-dependencies]
 
 [features]
-system = []
+external = []
